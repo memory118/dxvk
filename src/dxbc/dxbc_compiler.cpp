@@ -7597,6 +7597,20 @@ namespace dxvk {
         return result;
       }
 
+      case DxbcProgramType::GeometryShader: {
+        const DxbcSgnEntry* entry = m_isgn->findByRegister(regIdx);
+        DxbcVectorType result;
+        result.ctype  = DxbcScalarType::Float32;
+        result.ccount = 4;
+        if (m_isgn->findByRegister(regIdx))
+          result.ccount = m_isgn->regMask(regIdx).minComponents();
+
+        if (entry != nullptr) {
+          result.ctype  = entry->componentType;
+        }
+        return result;
+      }
+
       default: {
         DxbcVectorType result;
         result.ctype  = DxbcScalarType::Float32;
@@ -7631,6 +7645,21 @@ namespace dxvk {
         DxbcVectorType result;
         result.ctype  = DxbcScalarType::Float32;
         result.ccount = 4;
+        return result;
+      }
+
+      case DxbcProgramType::VertexShader:
+      case DxbcProgramType::GeometryShader: {
+        const DxbcSgnEntry* entry = m_osgn->findByRegister(regIdx);
+        DxbcVectorType result;
+        result.ctype  = DxbcScalarType::Float32;
+        result.ccount = 4;
+
+        if (m_osgn->findByRegister(regIdx))
+          result.ccount = m_osgn->regMask(regIdx).minComponents();
+        if (entry != nullptr) {
+          result.ctype  = entry->componentType;
+        }
         return result;
       }
 
